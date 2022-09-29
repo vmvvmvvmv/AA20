@@ -1,17 +1,16 @@
 {
-  "name": "tmp36",
+  "name": "cds",
   "version": "1.0.0",
-  "description": "tmp36-node project",
-  "main": "tmp36_node.js",
+  "description": "cds node project",
+  "main": "cds_node.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "tmp36",
-    "node",
-    "arduino"
+    "cds",
+    "node"
   ],
-  "author": "AA19",
+  "author": "AA20",
   "license": "MIT",
   "dependencies": {
     "serialport": "^9.2.4",

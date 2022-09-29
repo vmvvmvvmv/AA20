@@ -1,7 +1,7 @@
 // tmp36_node.js
 
 var serialport = require("serialport");
-var portName = "COM3"; // check your COM port!!
+var portName = "COM5"; // check your COM port!!
 var port = process.env.PORT || 3000;
 
 var io = require("socket.io").listen(port);

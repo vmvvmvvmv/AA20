@@ -24,15 +24,17 @@ sp.on("open", () => {
   console.log("serial port open");
 });
 
+var dStr = "";
 var tdata = []; // Array
 
 parser.on("data", (data) => {
   // call back when data is received
   // raw data only
   //console.log(data);
-
-  tdata = data; // data
-  console.log("AA20," + tdata);
+  dStr = getDateString();
+  tdata[0] = dStr;
+  tdata[1] = data; // data
+  console.log("AA20," + tdata.toString());
   io.sockets.emit("message", tdata); // send data to all clients
 });
 
@@ -49,13 +51,13 @@ io.sockets.on("connection", function (socket) {
 });
 
 // helper function to get a nicely formatted date string for IOT
-// function getDateString() {
-//   var time = new Date().getTime();
-//   // 32400000 is (GMT+9 Korea, GimHae)
-//   // for your timezone just multiply +/-GMT by 3600000
-//   var datestr = new Date(time + 32400000)
-//     .toISOString()
-//     .replace(/T/, " ")
-//     .replace(/Z/, "");
-//   return datestr;
-// }
+function getDateString() {
+    var time = new Date().getTime();
+   // 32400000 is (GMT+9 Korea, GimHae)
+   // for your timezone just multiply +/-GMT by 3600000
+    var datestr = new Date(time + 32400000)
+     .toISOString()
+     .replace(/T/, " ")
+     .replace(/Z/, "");
+    return datestr;
+ }

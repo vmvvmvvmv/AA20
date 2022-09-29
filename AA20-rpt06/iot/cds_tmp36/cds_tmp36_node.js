@@ -24,16 +24,33 @@ sp.on("open", () => {
   console.log("serial port open");
 });
 
-var tdata = []; // Array
+var dStr = "";
+var readData = "";
+var temp = "";
+var lux = "";
+var mdata = []; // Array
+var firstcommaidx = 0;
 
 parser.on("data", (data) => {
   // call back when data is received
   // raw data only
   //console.log(data);
+  readData = data.toString();
+  firstcommaidx = readData.indexOf(",");
+  if (firstcommaidx > 0) {
+    temp = readData.substring(0, firstcommaidx);
+    lux = readData.substring(firstcommaidx + 1);
+    readData = "";
 
-  tdata = data; // data
-  console.log("AA20," + tdata);
-  io.sockets.emit("message", tdata); // send data to all clients
+    dStr = getDateString();
+    mdata[0] = dStr;
+    mdata[1] = data; // data
+    console.log("AA20," + mdata.toString());
+    io.sockets.emit("message", mdata); // send data to all clients
+  } else{
+    console.log(readData);
+  }
+  
 });
 
 io.sockets.on("connection", function (socket) {
@@ -49,13 +66,13 @@ io.sockets.on("connection", function (socket) {
 });
 
 // helper function to get a nicely formatted date string for IOT
-// function getDateString() {
-//   var time = new Date().getTime();
-//   // 32400000 is (GMT+9 Korea, GimHae)
-//   // for your timezone just multiply +/-GMT by 3600000
-//   var datestr = new Date(time + 32400000)
-//     .toISOString()
-//     .replace(/T/, " ")
-//     .replace(/Z/, "");
-//   return datestr;
-// }
+function getDateString() {
+    var time = new Date().getTime();
+   // 32400000 is (GMT+9 Korea, GimHae)
+   // for your timezone just multiply +/-GMT by 3600000
+    var datestr = new Date(time + 32400000)
+     .toISOString()
+     .replace(/T/, " ")
+     .replace(/Z/, "");
+    return datestr;
+ }

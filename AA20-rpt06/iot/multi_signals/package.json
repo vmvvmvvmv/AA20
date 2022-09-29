@@ -1,17 +1,12 @@
 {
-  "name": "tmp36",
+  "name": "multi_signals",
   "version": "1.0.0",
-  "description": "tmp36-node project",
-  "main": "tmp36_node.js",
+  "description": "multi-signals-node project",
+  "main": "AA20_multi_signals.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "tmp36",
-    "node",
-    "arduino"
-  ],
-  "author": "AA19",
+  "author": "AA20",
   "license": "MIT",
   "dependencies": {
     "serialport": "^9.2.4",
