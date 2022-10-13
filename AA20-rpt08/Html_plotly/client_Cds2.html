@@ -1,0 +1,113 @@
+<!DOCTYPE html> 
+<head>  
+  <meta charset="utf-8">
+  <title>IoT example: Real time signal from Arduino</title> 
+  <script src = "https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script> 
+  <style>body{padding:0;margin:30;background:#fff}</style>
+</head>
+
+<body>  <!-- style="width:100%;height:100%"> -->
+
+<h1 align="center"> Real-time luminosity(lux) form Cds sensor </h1>
+
+<h3 align="center"> on Time: <span id="time"> </span> </h3> 
+
+<div id = "myDiv"></div>
+
+<hr>
+
+  <script>
+  /* JAVASCRIPT CODE GOES HERE */
+    var streamPlot = document.getElementById('myDiv');
+    var ctime = document.getElementById('time');
+
+    var tArray = [],
+        xTrack = [],
+        numPts = 50,
+        dtda = [],
+        preX = -1,
+        initFlag = true;
+    // Get message from network socket
+    var socket = io.connect('http://localhost:3000'); // port = 3000  
+    socket.on('connect', function () {
+        socket.on('message', function (msg) {
+          if(msg[0]!='' && initFlag){
+            dtda[0] = msg[0];
+            dtda[1] = parseInt(msg[1]);
+            init();
+            initFlag = false;
+          }
+            // message on Socket (TCP server)
+            // Check the console by F12 in Chrome browser
+            console.log(msg[0]); // mdata[0] => dStr
+            console.log(parseInt(msg[1])); // mdata[1] => msg[1]
+            //console.log(msg[2]);
+            //console.log(msg[3]);
+            dtda[0] = msg[0];
+            dtda[1] = parseInt(msg[1]);
+            // Display signal on web browser           
+            ctime.innerHTML = dtda[0];
+            // nextPt(); // + "," + msg[2] + "," + msg[3];
+            tArray = tArray.concat(dtda[0]);
+            tArray.splice(0,1);
+            xTrack = xTrack.concat(dtda[1]);
+            xTrack.splice(0,1);
+            var update = {
+                x : [tArray],
+                y : [xTrack]
+            }
+            Plotly.update(streamPlot, update);
+        });
+    });   
+    function init() {
+      for (i = 0; i < numPts; i++) {
+        tArray.push(dtda[0]);
+        xTrack.push(dtda[1]);
+      }
+
+      Plotly.plot(streamPlot, data, layout);
+    } 
+
+    function nextPt() {
+      tArray.shift();
+      tArray.push(dtda[0]);
+
+      xTrack.shift();
+      xTrack.push(dtda[1]);
+
+      Plotly.redraw(streamPlot);
+    }
+    var data = [{
+      x : tArray,
+      y : xTrack,
+      name : 'Iuminosity',
+      mode : "markers+lines",
+      line : {
+        color : "#1f77b4",
+        width : 1
+      },
+      marker : {
+        color: "rgb(255,0,0)",
+        size : 6,
+        line : {
+          color : "black",
+          width : 0.5
+        }
+      }
+    }];
+    var layout = {
+      xaxis : {
+        title : 'time',
+        domain : [0,1]
+      },
+      yaxis : {
+        title : "luminosity (lux)",
+        domain : [0,1],
+        range : [0, 500]
+      }
+    };
+
+  </script>
+</body>
+</html>
